@@ -46,4 +46,52 @@ defmodule ToyRobot.RobotTest do
       assert robot.north == -1
     end
   end
+
+  describe "robot turns left" do
+    setup do
+      {:ok, %{robot: %Robot{east: 0, north: 0, facing: "NORTH"}}}
+    end
+
+    test "moves", %{robot: robot} do
+      robot = robot |> Robot.move()
+      assert robot.north == 1
+    end
+
+    test "turns left", %{robot: robot} do
+      robot = robot |> Robot.turn_left()
+      assert robot.facing == "WEST"
+    end
+  end
+
+  describe "robot turns right when facing north" do
+    setup do
+      {:ok, %{robot: %Robot{east: 0, north: 0, facing: "NORTH"}}}
+    end
+
+    test "moves one space north", %{robot: robot} do
+      robot = robot |> Robot.move()
+      assert robot.north == 1
+    end
+
+    test "turns right", %{robot: robot} do
+      robot = robot |> Robot.turn_right()
+      assert robot.facing == "EAST"
+    end
+  end
+
+  describe "robot turns right when facing south" do
+    setup do
+      {:ok, %{robot: %Robot{east: 0, north: 0, facing: "SOUTH"}}}
+    end
+
+    test "moves one space south", %{robot: robot} do
+      robot = robot |> Robot.move()
+      assert robot.north == -1
+    end
+
+    test "turns right", %{robot: robot} do
+      robot = robot |> Robot.turn_right()
+      assert robot.facing == "WEST"
+    end
+  end
 end
