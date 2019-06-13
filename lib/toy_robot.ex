@@ -1,4 +1,7 @@
-defmodule ToyRobot do
+defmodule ToyRobot.Robot do
+  defstruct north: 0, east: 0, facing: "NORTH"
+  alias ToyRobot.Robot
+
   @moduledoc """
   Documentation for ToyRobot.
   """
@@ -7,52 +10,78 @@ defmodule ToyRobot do
   Moves one space forward.
 
   ## Examples
-
-      iex> ToyRobot.move(%{position: 0})
-      %{position: 1}
-
-      iex> %{position: 0} |> ToyRobot.move |> ToyRobot.move
-      %{position: 2}
+      iex> alias ToyRobot.Robot
+      ToyRobot.Robot
+      iex> robot = %Robot{north: 0,facing: "NORTH"}
+      %Robot{north: 0,facing: "NORTH"}
+      iex> robot |> Robot.move |> Robot.move
+      %Robot{north: 2}
   """
-  def move(%{position: position}) do
-    %{position: position + 1}
+  def move(%__MODULE__{facing: "NORTH"} = robot), do: robot |> move_north
+  def move(%__MODULE__{facing: "EAST"} = robot), do: robot |> move_east
+  def move(%__MODULE__{facing: "SOUTH"} = robot), do: robot |> move_south
+  def move(%__MODULE__{facing: "WEST"} = robot), do: robot |> move_west
+
+  @doc """
+  Moves one space forward.
+
+  ## Examples
+      iex> alias ToyRobot.Robot
+      ToyRobot.Robot
+      iex> robot = %Robot{east: 0}
+      %Robot{east: 0}
+      iex> robot |> Robot.move_east |> Robot.move_east
+      %Robot{east: 2}
+  """
+  def move_east(robot) do
+    %__MODULE__{east: robot.east + 1}
   end
 
   @doc """
-  Turn left.
+  Moves one space forward.
 
   ## Examples
 
-      iex> ToyRobot.left(%{facing: "WEST"})
-      %{facing: "SOUTH"}
-
-    
+      iex> alias ToyRobot.Robot
+      ToyRobot.Robot
+      iex> robot = %Robot{east: 0}
+      %Robot{east: 0}
+      iex> robot |> Robot.move_west |> Robot.move_west
+      %Robot{east: -2}
   """
-  def left(%{facing: facing}) do
-    case %{facing: facing} do
-      %{facing: "NORTH"} -> %{facing: "WEST"}
-      %{facing: "WEST"} -> %{facing: "SOUTH"}
-      %{facing: "EAST"} -> %{facing: "NORTH"}
-      %{facing: "SOUTH"} -> %{facing: "EAST"}
-    end
+  def move_west(robot) do
+    %__MODULE__{east: robot.east - 1}
   end
 
   @doc """
-  Turn right.
+  Moves one space forward.
 
   ## Examples
 
-      iex> ToyRobot.right(%{facing: "WEST"})
-      %{facing: "NORTH"}
-
-    
+      iex> alias ToyRobot.Robot
+      ToyRobot.Robot
+      iex> robot = %Robot{north: 0}
+      %Robot{north: 0}
+      iex> robot |> Robot.move_north |> Robot.move_north
+      %Robot{north: 2}
   """
-  def right(%{facing: facing}) do
-    case %{facing: facing} do
-      %{facing: "NORTH"} -> %{facing: "EAST"}
-      %{facing: "WEST"} -> %{facing: "NORTH"}
-      %{facing: "EAST"} -> %{facing: "SOUTH"}
-      %{facing: "SOUTH"} -> %{facing: "WEST"}
-    end
+  def move_north(robot) do
+    %__MODULE__{north: robot.north + 1}
+  end
+
+  @doc """
+  Moves one space forward.
+
+  ## Examples
+
+      iex> alias ToyRobot.Robot
+      ToyRobot.Robot
+      iex> robot = %Robot{east: 0}
+      %Robot{east: 0}
+      iex> robot |> Robot.move_south |> Robot.move_south
+      %Robot{north: -2}
+  """
+  def move_south(robot) do
+    %__MODULE__{north: robot.north - 1}
   end
 end
