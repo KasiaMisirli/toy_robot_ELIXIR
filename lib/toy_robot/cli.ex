@@ -16,6 +16,8 @@ defmodule ToyRobot.CLI do
     File.stream!(filename)
     |> Enum.to_list()
     |> Enum.map(&String.trim/1)
+
+    # |> ToyRobot.CommandProcessor
   end
 
   # run_commands/1

@@ -1,5 +1,5 @@
 defmodule ToyRobot.Grid do
-  defstruct [:height, :width]
+  defstruct [:north_boundary, :east_boundary]
   alias ToyRobot.Grid
 
   @doc """
@@ -9,8 +9,8 @@ defmodule ToyRobot.Grid do
 
     iex> alias ToyRobot.Grid
     alias ToyRobot.Grid
-    iex> grid = %Grid{height: 4,width: 4}
-    %Grid{height: 4,width: 4}
+    iex> grid = %Grid{north_boundary: 4,east_boundary: 4}
+    %Grid{north_boundary: 4,east_boundary: 4}
     iex> grid |> Grid.valid_position?(%{north: 4,east: 4})
     true
     iex> grid |> Grid.valid_position?(%{north: 0,east: 4})
@@ -21,7 +21,10 @@ defmodule ToyRobot.Grid do
     false
   """
 
-  def valid_position?(%Grid{height: height, width: width}, %{north: north, east: east}) do
-    north >= 0 && north <= height && east >= 0 && east <= width
+  def valid_position?(%Grid{north_boundary: north_boundary, east_boundary: east_boundary}, %{
+        north: north,
+        east: east
+      }) do
+    north >= 0 && north <= north_boundary && east >= 0 && east <= east_boundary
   end
 end
