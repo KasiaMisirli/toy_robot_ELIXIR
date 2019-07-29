@@ -1,8 +1,13 @@
 defmodule ToyRobot.CommandRunner do
-  alias ToyRobot.CommandHandler
+  alias ToyRobot.{Simulation, Table}
 
-  def run([{:place, _placement} = command | rest]) do
-    case CommandHandler.handle(command) do
+  def run([{:place, placement} = command | rest]) do
+    %Table{
+      north_boundary: 4,
+      east_boundary: 4
+    }
+    |> Simulation.place(placement)
+    |> case do
       {:ok, simulation} -> run(rest, simulation)
       {:error, :invalid_placement} -> run(rest)
     end
@@ -12,35 +17,44 @@ defmodule ToyRobot.CommandRunner do
   def run([]), do: nil
 
   def run([{:invalid, _command} | rest], simulation), do: run(rest, simulation)
+
   def run([:move | rest], simulation) do
-    new_simulation = :move
-    |> CommandHandler.handle(simulation)
-    |> case do
-      {:ok, simulation} -> simulation
-      {:error, :at_table_boundary} -> simulation
-    end
+    new_simulation =
+      simulation
+      |> Simulation.move()
+      |> case do
+        {:ok, simulation} -> simulation
+        {:error, :at_table_boundary} -> simulation
+      end
+
     run(rest, new_simulation)
   end
 
   def run(
-    [:report | rest],
-    simulation
-  ) do
+        [:report | rest],
+        simulation
+      ) do
     %{
       east: east,
       north: north,
       facing: facing
-    } = CommandHandler.handle(:report, simulation)
+    } = simulation |> Simulation.report()
 
-    facing = facing |> Atom.to_string |> String.upcase
-    IO.puts "The robot is at (#{east}, #{north}) and is facing #{facing}"
+    facing = facing |> Atom.to_string() |> String.upcase()
+    IO.puts("The robot is at (#{east}, #{north}) and is facing #{facing}")
 
     run(rest, simulation)
   end
 
-  def run([command | rest], simulation) do
-    {:ok, simulation} = command |> CommandHandler.handle(simulation)
+  def run([:turn_left | rest], simulation) do
+    {:ok, simulation} = simulation |> Simulation.turn_left()
     run(rest, simulation)
   end
+
+  def run([:turn_right | rest], simulation) do
+    {:ok, simulation} = simulation |> Simulation.turn_right()
+    run(rest, simulation)
+  end
+
   def run([], simulation), do: simulation
 end

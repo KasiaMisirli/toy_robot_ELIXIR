@@ -1,6 +1,6 @@
 defmodule ToyRobot.Robot do
   alias ToyRobot.Robot
-  defstruct [north: 0, east: 0, facing: :north]
+  defstruct north: 0, east: 0, facing: :north
 
   @doc """
   Moves the robot forward one space in the direction it is facing.
@@ -14,6 +14,7 @@ defmodule ToyRobot.Robot do
       iex> robot |> Robot.move
       %Robot{north: 1}
   """
+  # def move(%Robot{facing: facing, north: north, east: east} = robot) do
   def move(%Robot{facing: facing} = robot) do
     case facing do
       :north -> robot |> move_north
@@ -36,12 +37,13 @@ defmodule ToyRobot.Robot do
       %Robot{facing: :west}
   """
   def turn_left(%Robot{facing: facing} = robot) do
-    new_facing = case facing do
-      :north -> :west
-      :east -> :north
-      :south -> :east
-      :west -> :south
-    end
+    new_facing =
+      case facing do
+        :north -> :west
+        :east -> :north
+        :south -> :east
+        :west -> :south
+      end
 
     %Robot{robot | facing: new_facing}
   end
@@ -59,12 +61,13 @@ defmodule ToyRobot.Robot do
       %Robot{facing: :east}
   """
   def turn_right(%Robot{facing: facing} = robot) do
-    new_facing = case facing do
-      :north -> :east
-      :east -> :south
-      :south -> :west
-      :west -> :north
-    end
+    new_facing =
+      case facing do
+        :north -> :east
+        :east -> :south
+        :south -> :west
+        :west -> :north
+      end
 
     %Robot{robot | facing: new_facing}
   end
@@ -83,5 +86,16 @@ defmodule ToyRobot.Robot do
 
   defp move_south(%Robot{} = robot) do
     %Robot{robot | north: robot.north - 1}
+  end
+
+  def report(%Robot{} = robot) do
+    %{
+      east: east,
+      north: north,
+      facing: facing
+    } = robot |> Robot.report()
+
+    facing = facing |> Atom.to_string() |> String.upcase()
+    IO.puts("The robot is at (#{east}, #{north}) and is facing #{facing}")
   end
 end
